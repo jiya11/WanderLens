@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <title>WanderLens</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <h1>WanderLens</h1>
+      <nav>
+        <a class="link" href="./passport.html">Passport</a>
+      </nav>
+    </header>
+
+    <main class="camera-area">
+      <div class="video-frame">
+        <video id="video" autoplay playsinline></video>
+        <canvas id="canvas" class="hidden" width="1280" height="720"></canvas>
+        <div id="overlay" class="overlay hidden">
+          <div class="overlay-card">
+            <div class="overlay-title" id="overlayTitle">—</div>
+            <div class="overlay-text" id="overlayText">—</div>
+            <div class="overlay-actions">
+              <button id="saveBtn" class="btn">Add to Passport</button>
+              <button id="closeOverlayBtn" class="btn btn-secondary">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button id="scanBtn" class="btn btn-primary">Scan</button>
+      </div>
+      <p class="hint">Tip: Hold up a landmark image on your phone or screen.</p>
+    </main>
+  </div>
+
+  <script src="./script.js"></script>
+  </body>
+  </html>
+
+
