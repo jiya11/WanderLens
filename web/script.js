@@ -52,7 +52,17 @@ async function analyzeImage(imageDataUrl) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ image: imageDataUrl })
   });
-  if (!res.ok) throw new Error(`Analyze failed: ${res.status}`);
+  if (!res.ok) {
+    // Try to read JSON error from the server to make debugging easier
+    let bodyText = await res.text();
+    try {
+      const bodyJson = JSON.parse(bodyText || "{}");
+      const msg = bodyJson.message || bodyJson.error || bodyJson.error_description || bodyText;
+      throw new Error(`Analyze failed: ${res.status} - ${msg}`);
+    } catch (e) {
+      throw new Error(`Analyze failed: ${res.status} - ${bodyText}`);
+    }
+  }
   return res.json();
 }
 
