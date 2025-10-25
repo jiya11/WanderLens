@@ -1,11 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
   <title>WanderLens</title>
   <link rel="stylesheet" href="./style.css" />
+  <!-- 
+    MediaPipe Gesture Recognizer Integration
+    Source: https://developers.google.com/mediapipe/solutions/vision/gesture_recognizer
+    License: Apache 2.0 (https://github.com/google/mediapipe/blob/master/LICENSE)
+  -->
+  <script type="module">
+    import {
+      GestureRecognizer,
+      FilesetResolver
+    } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest";
+    window.gestureModule = { GestureRecognizer, FilesetResolver };
+  </script>
 </head>
+
 <body>
   <div class="app">
     <header class="app-header">
@@ -33,13 +47,34 @@
 
       <div class="controls">
         <button id="scanBtn" class="btn btn-primary">Scan</button>
+        <button id="findAttractionsBtn" class="btn btn-primary">Discover Near Me</button>
       </div>
       <p class="hint">Tip: Hold up a landmark image on your phone or screen.</p>
     </main>
+
+  </div>
+
+  <!-- Attractions popup overlay -->
+  <div id="attractionsPopup" class="attractions-popup hidden">
+    <div class="attractions-popup-content">
+      <div class="attractions-popup-header">
+        <h3>Discover Near Me</h3>
+        <button id="closeAttractionsBtn" class="btn-close">×</button>
+      </div>
+      <div class="tab-controls">
+        <button id="attractionsTab" class="tab-btn active">Attractions</button>
+        <button id="foodTab" class="tab-btn">Food Spots</button>
+      </div>
+      <div id="attractionsList" class="attractions-list">
+        <!-- Attractions will be populated here -->
+      </div>
+      <div id="foodList" class="attractions-list hidden">
+        <!-- Food spots will be populated here -->
+      </div>
+    </div>
   </div>
 
   <script src="./script.js"></script>
-  </body>
-  </html>
+</body>
 
-
+</html>

@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
   <title>WanderLens — Passport</title>
   <link rel="stylesheet" href="./style.css" />
 </head>
+
 <body>
   <div class="app">
     <header class="app-header">
@@ -21,25 +23,66 @@
   </div>
 
   <script>
-    function fmt(ts){ try { return new Date(ts).toLocaleString(); } catch { return ts; } }
-    function render(){
+    function fmt(ts) { try { return new Date(ts).toLocaleString(); } catch { return ts; } }
+
+    function handleImageUpload(entryId) {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.onchange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        // Convert to base64
+        const reader = new FileReader();
+        reader.onload = () => {
+          const entries = JSON.parse(localStorage.getItem('passportEntries') || '[]');
+          const index = entries.findIndex(e => e.id === entryId);
+          if (index !== -1) {
+            entries[index].image = reader.result;
+            entries[index].toDiscover = false;
+            localStorage.setItem('passportEntries', JSON.stringify(entries));
+            render();
+          }
+        };
+        reader.readAsDataURL(file);
+      };
+      input.click();
+    }
+
+    function render() {
       const root = document.getElementById('list');
       const entries = JSON.parse(localStorage.getItem('passportEntries') || '[]');
-      if (!entries.length) { root.innerHTML = '<p class="hint" style="padding:16px">No entries yet. Scan a landmark and save it!</p>'; return; }
+      if (!entries.length) {
+        root.innerHTML = '<p class="hint" style="padding:16px">No entries yet. Scan a landmark and save it!</p>';
+        return;
+      }
+
       root.innerHTML = entries.map(e => `
-        <div class="card">
-          <img class="thumb" src="${e.image}" alt="${e.name}" />
+        <div class="card ${e.toDiscover ? 'to-discover' : ''}">
+          ${e.image ? `
+            <img class="thumb" src="${e.image}" alt="${e.name}" />
+          ` : `
+            <div class="thumb" style="background: #1a2230;">
+              <div class="upload-overlay" onclick="handleImageUpload('${e.id}')">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                </svg>
+              </div>
+            </div>
+          `}
           <div class="meta">
             <div class="name">${e.name}</div>
             <div class="time">${fmt(e.timestamp)}</div>
             <div class="overlay-text">${e.info || ''}</div>
           </div>
+          ${e.toDiscover ? '<div class="to-discover-badge">To Discover</div>' : ''}
         </div>
       `).join('');
     }
+
     document.addEventListener('DOMContentLoaded', render);
   </script>
 </body>
+
 </html>
-
-
