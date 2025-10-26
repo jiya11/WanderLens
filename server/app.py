@@ -27,9 +27,7 @@ load_dotenv()
 app = Flask(__name__)
 # Development: allow all origins so the frontend (served from any local dev server)
 # can call the API without CORS issues. Remove or restrict this in production.
-#CORS(app)
-# Allow requests only from development servers
-CORS(app, resources={r"/*": {"origins": ["http://127.0.0.1:5173", "http://localhost:5173"]}})
+CORS(app)
 
 VISION_API_KEY = os.environ.get("VISION_API_KEY")
 if not VISION_API_KEY:
@@ -163,8 +161,6 @@ def health():
     return jsonify({"status": "ok"})
 
 @app.route("/analyze", methods=["POST"])
-
-
 def analyze():
     """
     Analyzes an image for landmark recognition
@@ -233,38 +229,6 @@ def analyze():
         import traceback
         traceback.print_exc()
         return jsonify({"error": "vision_api_error", "message": str(e)}), 502
-
-    else:
-        # Use service-account backed client
-        image = vision.Image(content=image_bytes)
-        try:
-            response = vision_client.landmark_detection(image=image)
-            landmarks = response.landmark_annotations
-        except Exception as e:
-            import traceback
-            traceback.print_exc()
-            return jsonify({"error": "vision_api_error", "message": str(e)}), 502
-
-    if not landmarks:
-        return jsonify({
-            "landmark": None,
-            "confidence": 0,
-            "info": "No landmark detected."
-        })
-    
-    #Take top result
-    landmark = landmarks[0]
-
-    response = {
-        "landmark": landmark.description,
-        "confidence": landmark.score,
-        "locations": [
-            {"lat": loc.lat_lng.latitude, "lng": loc.lat_lng.longitude}
-            for loc in landmark.locations
-        ],
-        "info": f"Detected landmark: {landmark.description}"
-    }
-    return jsonify(response)
 
 
 @app.route("/ocr_translate", methods=["POST"])
