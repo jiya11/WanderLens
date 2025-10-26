@@ -55,6 +55,16 @@ let countdownElement = null;
 // Initialize gesture recognizer
 async function initGestureRecognition() {
   try {
+    // Wait for module to load
+    if (!window.gestureModule) {
+      console.warn("Gesture module not loaded yet, waiting...");
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+    
+    if (!window.gestureModule) {
+      throw new Error("Gesture module failed to load");
+    }
+    
     const { GestureRecognizer, FilesetResolver } = window.gestureModule;
     
     const vision = await FilesetResolver.forVisionTasks(
@@ -690,8 +700,16 @@ function handlePopupClick(event) {
   }
 }
 
+console.log("WanderLens script loaded!");
+
 document.addEventListener("DOMContentLoaded", () => {
-  if (video) startCamera();
+  console.log("DOM loaded, initializing...");
+  if (video) {
+    console.log("Starting camera...");
+    startCamera();
+  } else {
+    console.error("Video element not found!");
+  }
   
   // Ensure popup starts hidden
   if (attractionsPopup) {

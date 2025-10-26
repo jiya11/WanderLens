@@ -1,46 +1,72 @@
+/* ============================================
+   COLOR PALETTE & DESIGN TOKENS
+   WanderLens color scheme and reusable values
+   ============================================ */
 :root {
-  --bg: #f3d7d6;
-  --card: #f26fa8;
-  --text: #11412f;
-  --muted: #0c2439;
-  --primary: #68b8f5;
-  --accent: #f18725;
-  --border: #1d5d48;
-  --border-strong: #f26fa8;
-  --panel: #ed4b2a;
-  --secondary: #ed4a2ace;
-  --overlay-start: #7de9a9;
-  --overlay-end: #3cc275;
-  --overlay-scrim: #f3d7d6;
+  /* Main Background Colors */
+  --bg: #f3d7d6;              /* Light pink - main background color */
+  --card: #f26fa8;            /* Pink - card and button backgrounds */
+  --panel: #ed4b2a;           /* Orange-red - panel accents */
+  
+  /* Text Colors */
+  --text: #11412f;            /* Dark green - primary text */
+  --muted: #0c2439;           /* Dark blue - secondary/muted text */
+  
+  /* Accent Colors */
+  --primary: #76b5c5
+  ;         /* Light blue - primary action buttons */
+  --secondary: #ed4a2ace;     /* Semi-transparent orange-red */
+  --accent: #f18725;          /* Orange - accent highlights */
+  
+  /* Border Colors */
+  --border: #1d5d48;          /* Dark green - standard borders */
+  --border-strong: #f26fa8;   /* Pink - emphasized borders */
+  
+  /* Overlay/Popup Colors */
+  --overlay-start: #7de9a9;   /* Light green - gradient start */
+  --overlay-end: #3cc275;     /* Green - gradient end, overlay backgrounds */
+  --overlay-scrim: #f3d7d6;   /* Light pink - overlay backdrop */
+  
+  /* Shadow Effects */
   --overlay-shadow: 0 12px 28px rgba(0,0,0,0.25);
-  --controls-overlay: rgba(17, 65, 47, 0.25);
+  --controls-overlay: rgba(17, 65, 47, 0.25);  /* Semi-transparent for control backgrounds */
   --controls-shadow: 0 10px 24px rgba(17, 65, 47, 0.25);
 }
 
+/* ============================================
+   GLOBAL RESET & BASE STYLES
+   ============================================ */
 * {
-  box-sizing: border-box;
+  box-sizing: border-box;  /* Include padding/border in element width/height */
 }
 
 html,
 body {
-  height: 100%;
+  height: 100%;  /* Full viewport height */
 }
 
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  color: var(--text);
-  background:var(--bg);
+  color: var(--text);        /* Default text color */
+  background: var(--bg);     /* Main background color */
 }
 
+/* ============================================
+   MAIN APP CONTAINER
+   Centers app and limits width for mobile-like experience
+   ============================================ */
 .app {
-  max-width: 480px;
-  margin: 0 auto;
-  min-height: 100vh;
+  max-width: 480px;          /* Mobile-friendly width */
+  margin: 0 auto;            /* Center horizontally */
+  min-height: 100vh;         /* Fill full viewport height */
   display: flex;
   flex-direction: column;
 }
 
+/* ============================================
+   APP HEADER (Currently hidden but kept for future use)
+   ============================================ */
 .app-header {
   display: flex;
   align-items: center;
@@ -50,13 +76,6 @@ body {
   top: 0;
   background: var(--card);
   backdrop-filter: blur(8px);
-  /* Match the phone frame */
-  border-top: 0px solid var(--border-strong);
-  border-left: 0px solid var(--border-strong);
-  border-right: 0px solid var(--border-strong);
-  border-bottom: 0;
-  border-top-left-radius: 0px;
-  border-top-right-radius: 0px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
@@ -65,25 +84,59 @@ body {
   font-size: 20px;
 }
 
-
-.topbar-content { display: flex; align-items: center; justify-content: space-between; }
-.brand { font-weight: 800; letter-spacing: 0.3px; }
-.passport-link { font-weight: 600; }
+/* ============================================
+   TOP BAR (WanderLens branding + Passport link)
+   Overlays the video at the top
+   ============================================ */
 .overlay-topbar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    padding: 10px 12px;
-    background: var(--bg);
-    border-bottom: 1px solid var(--border);
-    z-index: 2;
-  }
-.link {
-  color: var(--text);
-  text-decoration: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 10px 12px;
+  background: #eb98be;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;    /* Rounded corners */   
+  z-index: 2;  /* Ensure it stays above video */
 }
 
+.topbar-content { 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+
+}
+
+.brand { 
+  font-weight: 800; 
+  letter-spacing: 0.3px;  /* App name styling */
+}
+
+.passport-link { 
+  font-weight: 700;  /* "Passport" link styling */
+  color: var(--text);
+  text-decoration: none;
+  font-style: italic;
+  /* Button-like appearance with transparent panel color */
+  background: rgba(237, 75, 42, 0.3);  /* Transparent --panel color */
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.passport-link:hover {
+  background: rgba(237, 75, 42, 0.5);  /* Darker on hover */
+}
+
+.link {
+  color: var(--text);
+  text-decoration: none;  /* Remove underline from links */
+}
+
+/* ============================================
+   CAMERA AREA
+   Main content area containing the video feed
+   ============================================ */
 .camera-area {
   padding: 16px;
   display: flex;
@@ -91,17 +144,50 @@ body {
   gap: 12px;
 }
 
-.split { display: grid; grid-template-columns: 1fr; gap: 16px; }
-.left { display: flex; flex-direction: column; gap: 12px; }
+/* ============================================
+   LAYOUT UTILITIES (For future use)
+   Split-screen layouts and panels
+   ============================================ */
+.split { 
+  display: grid; 
+  grid-template-columns: 1fr; 
+  gap: 16px; 
+}
+
+.left { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 12px; 
+}
+
+/* Right panel for displaying info */
 .right.panel {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 12px;
 }
-.panel-header { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
-.panel-title { margin: 0; font-size: 16px; }
-.panel-subtitle { color: var(--muted); font-size: 12px; }
+
+/* Panel header with title and subtitle */
+.panel-header { 
+  display: flex; 
+  align-items: baseline; 
+  justify-content: space-between; 
+  gap: 8px; 
+  margin-bottom: 8px; 
+}
+
+.panel-title { 
+  margin: 0; 
+  font-size: 16px; 
+}
+
+.panel-subtitle { 
+  color: var(--muted); 
+  font-size: 12px; 
+}
+
+/* Text area in panel */
 .panel-text {
   width: 100%;
   min-height: 160px;
@@ -110,124 +196,261 @@ body {
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 10px;
-  resize: vertical;
+  resize: vertical;              /* Allow vertical resizing */
 }
-.panel-original { margin-top: 10px; }
-.panel-label { color: var(--muted); font-size: 12px; margin-bottom: 4px; }
-.panel-pre { background: var(--overlay-end); border: 1px solid var(--border); border-radius: 8px; padding: 10px; white-space: pre-wrap; word-break: break-word; }
-.panel-actions { display: flex; gap: 8px; margin-top: 10px; }
 
+.panel-original { 
+  margin-top: 10px; 
+}
+
+.panel-label { 
+  color: var(--muted); 
+  font-size: 12px; 
+  margin-bottom: 4px; 
+}
+
+/* Pre-formatted text in panel */
+.panel-pre { 
+  background: var(--overlay-end); 
+  border: 1px solid var(--border); 
+  border-radius: 8px; 
+  padding: 10px; 
+  white-space: pre-wrap;         /* Preserve whitespace and wrap */
+  word-break: break-word; 
+}
+
+/* Action buttons in panel */
+.panel-actions { 
+  display: flex; 
+  gap: 8px; 
+  margin-top: 10px; 
+}
+
+/* Desktop layout adjustments */
 @media (min-width: 900px) {
-  .split { grid-template-columns: 1.2fr 0.8fr; }
+  .split { 
+    grid-template-columns: 1.2fr 0.8fr;  /* Wider left column */
+  }
 }
 
+/* ============================================
+   VIDEO FRAME & CAMERA FEED
+   Container for the live camera video
+   ============================================ */
 .video-frame {
-  position: relative;
+  position: relative;          /* Required for absolute positioned children */
   border-radius: 16px;
-  overflow: hidden;
-  background: #000;
+  overflow: hidden;            /* Keep rounded corners */
+  background: #000;            /* Black background while video loads */
   border: 1px solid rgba(255, 255, 255, 0.06);
+  
+
+
+  
 }
 
 video {
   width: 100%;
   height: auto;
   display: block;
-  aspect-ratio: 9 / 19.5; /* match container for taller view */
+  aspect-ratio: 9 / 19.5;      /* Tall phone-like aspect ratio */
   background: var(--border-strong);
 }
 
+/* ============================================
+   OVERLAY (Translation & Landmark Results)
+   Appears at TOP of screen below WanderLens header
+   ============================================ */
 .overlay {
   position: absolute;
-  inset: 0; /*
-  display: none;
-  /* Changed from flex to none */
-  align-items: flex-end;
-  justify-content: center;
+  inset: 0;                    /* Cover entire video frame */
+  display: none;               /* Hidden by default */
+  align-items: flex-start;     /* Align to top */
+  justify-content: center;     /* Center horizontally */
   padding: 16px;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.55) 85%);
+  padding-top: 60px;           /* Space below top bar */
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0) 40%);
+  pointer-events: none;        /* Allow clicking through overlay background */
 }
 
 .overlay:not(.hidden) {
-  display: flex;
-  /* Only show when not hidden */
+  display: flex;               /* Show when active */
 }
 
+/* Card containing the translation/landmark result */
 .overlay-card {
   width: 100%;
   max-width: 720px;
-  background: var(--overlay-end);
+  background: var(--bg);       /* Uses main background color */
   border: 1px solid rgba(255,255,255,0.14);
   border-radius: 16px;
   padding: 18px;
-  margin-top: 16px; /* spacing from top */
   box-shadow: var(--border);
+  pointer-events: auto;        /* Card is clickable */
 }
 
-.overlay-title { font-weight: 500; font-size: 14px; color: var(--text); letter-spacing: 0.2px; margin-bottom: 6px; }
-.overlay-text { color: var(--text); margin-top: 0; font-size: 20px; line-height: 1.6; white-space: pre-wrap; font-weight: 700; text-align: center; }
-.overlay-title.hidden + .overlay-text { margin-top: 0; }
+/* Result title (e.g., "Translation EN → FR") */
+.overlay-title { 
+  font-weight: 500; 
+  font-size: 14px; 
+  color: var(--text); 
+  letter-spacing: 0.2px; 
+  margin-bottom: 6px; 
+}
 
-.overlay-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
-.overlay-actions .btn { width: 100%; }
+/* Main result text (translated text or landmark name) */
+.overlay-text { 
+  color: var(--text); 
+  margin-top: 0; 
+  font-size: 20px; 
+  line-height: 1.6; 
+  white-space: pre-wrap;       /* Preserve line breaks */
+  font-weight: 700; 
+  text-align: center; 
+}
 
-.controls { display: flex; gap: 12px; justify-content: center; }
+.overlay-title.hidden + .overlay-text { 
+  margin-top: 0; 
+}
+
+/* Action buttons (Add to Passport, Close) */
+.overlay-actions { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 8px; 
+  margin-top: 12px; 
+}
+
+.overlay-actions .btn { 
+  width: 100%;                 /* Full width buttons */
+}
+
+/* ============================================
+   CONTROLS (Buttons & Language Selector)
+   Positioned at BOTTOM of video frame
+   ============================================ */
+.controls { 
+  display: flex; 
+  gap: 12px; 
+  justify-content: center; 
+}
+
+/* Main control panel overlaying the video at bottom */
 .controls.in-frame {
   position: absolute;
   left: 50%;
-  bottom: 16px;
-  transform: translateX(-50%);
+  bottom: 16px;                /* Positioned at bottom */
+  transform: translateX(-50%); /* Center horizontally */
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  background: var(--controls-overlay);
+  background: var(--bg);       /* Uses main background color */
   border: 1px solid rgba(255,255,255,0.12);
   padding: 10px 12px;
   border-radius: 12px;
-  backdrop-filter: blur(6px);
-  width: calc(100% - 32px);
+  backdrop-filter: blur(6px);  /* Slight blur effect */
+  width: calc(100% - 32px);    /* Nearly full width with margins */
   max-width: 640px;
   box-shadow: var(--controls-shadow);
 }
-.controls.in-frame .btn, .controls.in-frame select { width: 100%; }
-.controls.in-frame select { text-align: center; text-align-last: center; -moz-text-align-last: center; }
-.controls.in-frame select option { text-align: center; }
-.control-group { display: flex; flex-direction: column; gap: 6px; align-items: stretch; width: 100%; }
-.control-label { font-size: 12px; color: var(--text); }
-.hint.small { font-size: 11px; margin: 0; }
 
+/* All buttons and select dropdowns full width in control panel */
+.controls.in-frame .btn, 
+.controls.in-frame select { 
+  width: 100%; 
+}
+
+/* Center text in language selector dropdown */
+.controls.in-frame select { 
+  text-align: center; 
+  text-align-last: center; 
+  -moz-text-align-last: center;
+  /* Better dropdown arrow */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2311412f' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 36px;
+}
+
+.controls.in-frame select option { 
+  text-align: center; 
+}
+
+/* Language selector container */
+.control-group { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 6px; 
+  align-items: stretch; 
+  width: 100%; 
+}
+
+/* "Target language" label */
+.control-label { 
+  font-size: 12px; 
+  color: var(--text); 
+  text-align: center;
+}
+
+/* Small hint text */
+.hint.small { 
+  font-size: 11px; 
+  margin: 0; 
+}
+
+/* ============================================
+   BUTTONS
+   Standard button styles used throughout the app
+   ============================================ */
 .btn {
   padding: 10px 14px;
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  background: var(--card);
+  background: #eb98be;    /* Default pink button */
   color: var(--text);
   cursor: pointer;
+  transition: all 0.2s;       /* Smooth hover effects */
 }
-.btn-primary { background: var(--primary); color: #001622; border-color: rgba(0,0,0,0.15); }
-.btn-secondary { background: var(--secondary); }
 
+/* Primary action buttons (Translate, Scan, etc.) */
 .btn-primary {
-  background: var(--primary);
-  color: #001622;
+  background: var(--primary); /* Light blue */
+  color: var(--text);             /* Dark text for contrast */
   border-color: rgba(0, 0, 0, 0.15);
 }
 
+/* Secondary buttons (Close, etc.) */
 .btn-secondary {
-  background: #1a2230;
+  background: var(--accent);        /* Dark background */
+  color: var(--text);
+  font-style: italic;
 }
 
+/* Danger buttons (Remove from Passport) */
+.btn-danger {
+  background: var(--secondary);        /* Red background */
+  color: white;
+  border-color: #000;
+}
+
+/* Hint text below controls */
 .hint {
   color: var(--muted);
   text-align: center;
   font-size: 13px;
 }
 
+/* Utility class to hide elements */
 .hidden {
   display: none !important;
 }
 
+/* Additional controls wrapper */
 .controls {
   display: flex;
   gap: 12px;
@@ -236,18 +459,21 @@ video {
 }
 
 .controls .btn {
-  min-width: 120px;
+  min-width: 120px;           /* Minimum button width */
 }
 
-/* Attractions Popup */
+/* ============================================
+   ATTRACTIONS POPUP ("Discover Near Me")
+   Full-screen modal showing nearby places
+   ============================================ */
 .attractions-popup {
-  position: fixed;
+  position: fixed;           /* Cover entire screen */
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.9);
-  z-index: 9999;
+  background: rgba(0, 0, 0, 0.9);  /* Dark overlay */
+  z-index: 9999;             /* On top of everything */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -255,19 +481,21 @@ video {
   box-sizing: border-box;
 }
 
+/* Main popup content card */
 .attractions-popup-content {
-  background: var(--card);
+  background: var(--card);   /* Pink background */
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   width: 100%;
   max-width: 380px;
-  max-height: 80vh;
+  max-height: 80vh;          /* Don't exceed viewport height */
   overflow: hidden;
   display: flex;
   flex-direction: column;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
 }
 
+/* Popup header with title and close button */
 .attractions-popup-header {
   display: flex;
   align-items: center;
@@ -276,6 +504,13 @@ video {
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+.attractions-popup-header h3 {
+  margin: 0;
+  color: var(--text);
+  font-size: 20px;
+}
+
+/* Tab controls (Attractions / Food Spots) */
 .tab-controls {
   display: flex;
   gap: 2px;
@@ -284,11 +519,12 @@ video {
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+/* Individual tab button */
 .tab-btn {
   padding: 12px 24px;
   background: none;
   border: none;
-  color: var(--muted);
+  color: var(--muted);       /* Gray when inactive */
   font-size: 15px;
   cursor: pointer;
   position: relative;
@@ -296,13 +532,15 @@ video {
 }
 
 .tab-btn:hover {
-  color: var(--text);
+  color: var(--text);        /* Darker on hover */
 }
 
+/* Active tab styling */
 .tab-btn.active {
-  color: var(--primary);
+  color: var(--bg);     /* Pink when active */
 }
 
+/* Pink underline for active tab */
 .tab-btn.active::after {
   content: '';
   position: absolute;
@@ -310,15 +548,10 @@ video {
   left: 0;
   right: 0;
   height: 2px;
-  background: var(--primary);
+  background: var(--bg);
 }
 
-.attractions-popup-header h3 {
-  margin: 0;
-  color: var(--text);
-  font-size: 20px;
-}
-
+/* Close button (X) */
 .btn-close {
   background: none;
   border: none;
@@ -331,7 +564,7 @@ video {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
+  border-radius: 50%;       /* Circular button */
   transition: all 0.2s;
 }
 
@@ -340,14 +573,19 @@ video {
   color: var(--text);
 }
 
+/* ============================================
+   ATTRACTIONS LIST & CARDS
+   Scrollable list of nearby places
+   ============================================ */
 .attractions-list {
   padding: 20px;
-  overflow-y: auto;
+  overflow-y: auto;          /* Scroll if content is too long */
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 16px;                 /* Space between cards */
 }
 
+/* Individual attraction/food spot card */
 .attraction-card {
   background: rgba(255, 255, 255, 0.02);
   padding: 16px;
@@ -356,16 +594,19 @@ video {
   transition: all 0.2s;
 }
 
+/* Hover effect for cards */
 .attraction-card:hover {
   background: rgba(255, 255, 255, 0.04);
   border-color: rgba(255, 255, 255, 0.12);
 }
 
+/* Saved places get pink highlighting */
 .attraction-card.saved {
-  background: rgba(90, 200, 250, 0.05);
-  border-color: var(--primary);
+  background: rgba(243, 215, 214, 0.1);
+  border-color: var(--bg);
 }
 
+/* Card header (name + distance) */
 .attraction-header {
   display: flex;
   justify-content: space-between;
@@ -373,6 +614,7 @@ video {
   margin-bottom: 8px;
 }
 
+/* Place name */
 .attraction-card h4 {
   margin: 0;
   color: var(--text);
@@ -381,6 +623,7 @@ video {
   flex: 1;
 }
 
+/* Distance and walking time container */
 .attraction-distance {
   display: flex;
   flex-direction: column;
@@ -389,24 +632,28 @@ video {
   margin-left: 12px;
 }
 
+/* Distance in km */
 .distance {
-  color: var(--primary);
+  color: var(--bg);
   font-weight: 600;
   font-size: 14px;
 }
 
+/* Walking time estimate */
 .walking-time {
   color: var(--muted);
   font-size: 12px;
 }
 
+/* Place type (e.g., "Museum", "Restaurant") */
 .attraction-type {
-  color: var(--primary);
+  color: var(--bg);
   font-size: 0.9em;
   margin: 0 0 8px 0;
   text-transform: capitalize;
 }
 
+/* Place address */
 .attraction-address {
   color: var(--muted);
   font-size: 14px;
@@ -414,6 +661,7 @@ video {
   line-height: 1.4;
 }
 
+/* Place description */
 .attraction-description {
   color: var(--muted);
   margin: 8px 0;
@@ -421,14 +669,16 @@ video {
   line-height: 1.4;
 }
 
+/* Opening hours */
 .attraction-hours {
   color: var(--muted);
   font-size: 0.9em;
   margin: 8px 0;
 }
 
+/* Website link */
 .attraction-website {
-  color: var(--primary);
+  color: var(--bg);
   text-decoration: none;
   font-size: 14px;
   font-weight: 500;
@@ -438,6 +688,7 @@ video {
   text-decoration: underline;
 }
 
+/* Empty state message when no places found */
 .no-attractions {
   text-align: center;
   color: var(--muted);
@@ -445,6 +696,7 @@ video {
   font-style: italic;
 }
 
+/* Delete button for passport entries */
 .delete-btn {
   margin-top: 8px;
   padding: 6px 10px;
@@ -459,14 +711,17 @@ video {
   background-color: #d94444;
 }
 
-/* Mobile responsiveness */
+/* ============================================
+   MOBILE RESPONSIVENESS
+   Adjustments for small screens (phones)
+   ============================================ */
 @media (max-width: 480px) {
   .attractions-popup {
     padding: 8px;
   }
 
   .attractions-popup-content {
-    max-width: 100%;
+    max-width: 100%;           /* Full width on mobile */
     max-height: 90vh;
   }
 
@@ -484,6 +739,7 @@ video {
     padding: 12px;
   }
 
+  /* Stack distance info below name on mobile */
   .attraction-header {
     flex-direction: column;
     align-items: flex-start;
@@ -496,31 +752,38 @@ video {
   }
 }
 
-/* Passport */
+/* ============================================
+   PASSPORT PAGE
+   Saved landmarks and places to discover
+   ============================================ */
 .passport-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
   padding: 16px;
+
 }
 
+/* Individual passport entry card */
 .card {
   display: grid;
-  grid-template-columns: 104px 1fr;
+  grid-template-columns: 104px 1fr;  /* Thumbnail + content */
   gap: 12px;
   align-items: center;
-  background: var(--card);
+  background: var(--card);           /* Pink background */
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   padding: 10px;
   position: relative;
 }
 
+/* "To Discover" places (not yet visited) */
 .card.to-discover {
-  background: rgba(255, 209, 102, 0.05);
-  border-color: var(--accent);
+  background: rgba(255, 209, 102, 0.05);  /* Yellow tint */
+  border-color: var(--accent);            /* Orange border */
 }
 
+/* Upload image overlay (appears on hover) */
 .card .upload-overlay {
   position: absolute;
   inset: 0;
@@ -532,19 +795,20 @@ video {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  opacity: 0;
+  opacity: 0;                     /* Hidden by default */
   transition: opacity 0.2s;
 }
 
 .card .upload-overlay:hover {
-  opacity: 1;
+  opacity: 1;                     /* Show on hover */
 }
 
+/* "To Discover" badge in top-right corner */
 .to-discover-badge {
   position: absolute;
   top: 10px;
   right: 10px;
-  background: var(--accent);
+  background: var(--accent);      /* Orange background */
   color: #001622;
   padding: 4px 8px;
   border-radius: 6px;
@@ -552,24 +816,28 @@ video {
   font-weight: 600;
 }
 
+/* Thumbnail image */
 .thumb {
   width: 100%;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 1 / 1;            /* Square image */
   border-radius: 10px;
-  object-fit: cover;
-  background: #000;
+  object-fit: cover;              /* Crop to fit */
+  background: #000;               /* Black background while loading */
 }
 
+/* Card text content (name, time, etc.) */
 .meta {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
+/* Place/landmark name */
 .name {
   font-weight: 700;
 }
 
+/* Timestamp */
 .time {
   color: var(--muted);
   font-size: 12px;
