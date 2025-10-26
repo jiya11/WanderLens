@@ -21,68 +21,53 @@
       <div id="list" class="passport-list"></div>
     </main>
   </div>
-
+  
   <script>
-    function fmt(ts) { try { return new Date(ts).toLocaleString(); } catch { return ts; } }
+  function fmt(ts) {
+    try { return new Date(ts).toLocaleString(); }
+    catch { return ts; }
+  }
 
-    function handleImageUpload(entryId) {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = 'image/*';
-      input.onchange = async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
+  function loadEntries() {
+    return JSON.parse(localStorage.getItem('passportEntries') || '[]');
+  }
 
-        // Convert to base64
-        const reader = new FileReader();
-        reader.onload = () => {
-          const entries = JSON.parse(localStorage.getItem('passportEntries') || '[]');
-          const index = entries.findIndex(e => e.id === entryId);
-          if (index !== -1) {
-            entries[index].image = reader.result;
-            entries[index].toDiscover = false;
-            localStorage.setItem('passportEntries', JSON.stringify(entries));
-            render();
-          }
-        };
-        reader.readAsDataURL(file);
-      };
-      input.click();
+  function saveEntries(entries) {
+    localStorage.setItem('passportEntries', JSON.stringify(entries));
+  }
+
+  function deleteEntry(index) {
+    const entries = loadEntries();
+    entries.splice(index, 1);
+    saveEntries(entries);
+    render();
+  }
+
+  function render() {
+    const root = document.getElementById('list');
+    const entries = loadEntries();
+
+    if (!entries.length) {
+      root.innerHTML = '<p class="hint" style="padding:16px">No entries yet. Scan a landmark and save it!</p>';
+      return;
     }
 
-    function render() {
-      const root = document.getElementById('list');
-      const entries = JSON.parse(localStorage.getItem('passportEntries') || '[]');
-      if (!entries.length) {
-        root.innerHTML = '<p class="hint" style="padding:16px">No entries yet. Scan a landmark and save it!</p>';
-        return;
-      }
-
-      root.innerHTML = entries.map(e => `
-        <div class="card ${e.toDiscover ? 'to-discover' : ''}">
-          ${e.image ? `
-            <img class="thumb" src="${e.image}" alt="${e.name}" />
-          ` : `
-            <div class="thumb" style="background: #1a2230;">
-              <div class="upload-overlay" onclick="handleImageUpload('${e.id}')">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
-                </svg>
-              </div>
-            </div>
-          `}
-          <div class="meta">
-            <div class="name">${e.name}</div>
-            <div class="time">${fmt(e.timestamp)}</div>
-            <div class="overlay-text">${e.info || ''}</div>
-          </div>
-          ${e.toDiscover ? '<div class="to-discover-badge">To Discover</div>' : ''}
+    root.innerHTML = entries.map((e, i) => `
+      <div class="card">
+        <img class="thumb" src="${e.image}" alt="${e.name}" />
+        <div class="meta">
+          <div class="name">${e.name}</div>
+          <div class="time">${fmt(e.timestamp)}</div>
+          <div class="overlay-text">${e.info || ''}</div>
         </div>
-      `).join('');
-    }
+        <button class="delete-btn" onclick="deleteEntry(${i})">🗑️ Delete</button>
+      </div>
+    `).join('');
+  }
 
-    document.addEventListener('DOMContentLoaded', render);
-  </script>
+  document.addEventListener('DOMContentLoaded', render);
+</script>
+
 </body>
 
 </html>

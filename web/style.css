@@ -372,6 +372,20 @@ video {
   font-style: italic;
 }
 
+.delete-btn {
+  margin-top: 8px;
+  padding: 6px 10px;
+  background-color: #ff5c5c;
+  border: none;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background-color: #d94444;
+}
+
 /* Mobile responsiveness */
 @media (max-width: 480px) {
   .attractions-popup {
