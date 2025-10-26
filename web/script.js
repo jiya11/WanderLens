@@ -43,6 +43,10 @@ const BACKEND_URL = "http://127.0.0.1:5001";
 let gestureRecognizer = null;
 let lastGesture = null;
 let gestureTimeout = null;
+// Countdown state for gesture-triggered scan (peace sign)
+let countdownInProgress = false;
+let countdownTimer = null;
+let countdownElement = null;
 
 // Initialize gesture recognizer
 async function initGestureRecognition() {
@@ -87,6 +91,12 @@ function handleGesture(gestureName) {
       }
       break;
     case "Thumb_Down":
+      // If a countdown is running, Thumb_Down acts as a cancel
+      if (countdownInProgress) {
+        cancelGestureCountdown();
+        return;
+      }
+
       if (!overlay.classList.contains('hidden')) {
         closeOverlayBtn.click();
       } else if (!attractionsPopup.classList.contains('hidden')) {
@@ -94,7 +104,13 @@ function handleGesture(gestureName) {
       }
       break;
     case "Victory":
-      scanBtn.click();
+      // On peace/victory sign: start a 3-second countdown before scanning
+      if (!countdownInProgress) {
+        startGestureCountdown(3, () => {
+          // Trigger the same action as clicking the Scan button after countdown
+          scanBtn.click();
+        });
+      }
       break;
     case "Open_Palm":
       findAttractionsBtn.click();
@@ -131,6 +147,82 @@ async function detectGestures() {
   }
   
   requestAnimationFrame(detectGestures);
+}
+
+/**
+ * Create and start a visual countdown overlay for gesture-triggered actions
+ * @param {number} seconds - number of seconds to count down
+ * @param {Function} onComplete - called when countdown reaches zero
+ */
+function startGestureCountdown(seconds, onComplete) {
+  countdownInProgress = true;
+
+  // Create a simple countdown element centered over the video frame
+  countdownElement = document.createElement('div');
+  countdownElement.id = 'gesture-countdown';
+  countdownElement.style.position = 'absolute';
+  countdownElement.style.top = '50%';
+  countdownElement.style.left = '50%';
+  countdownElement.style.transform = 'translate(-50%, -50%)';
+  countdownElement.style.zIndex = 9999;
+  countdownElement.style.background = 'rgba(0,0,0,0.6)';
+  countdownElement.style.color = '#fff';
+  countdownElement.style.fontSize = '56px';
+  countdownElement.style.padding = '18px 28px';
+  countdownElement.style.borderRadius = '14px';
+  countdownElement.style.fontWeight = '700';
+  countdownElement.style.textAlign = 'center';
+  countdownElement.style.boxShadow = '0 8px 24px rgba(0,0,0,0.6)';
+  countdownElement.style.pointerEvents = 'none';
+
+  // Insert into the same container as the video so it overlays correctly
+  const videoFrame = document.querySelector('.video-frame') || document.body;
+  // Ensure the container is positioned so absolute child centers correctly
+  if (videoFrame && getComputedStyle(videoFrame).position === 'static') {
+    videoFrame.style.position = 'relative';
+  }
+  videoFrame.appendChild(countdownElement);
+
+  // Show initial value
+  let remaining = Math.max(1, Math.floor(seconds));
+  countdownElement.textContent = remaining;
+
+  // Update every second
+  countdownTimer = setInterval(() => {
+    remaining -= 1;
+    if (remaining > 0) {
+      countdownElement.textContent = remaining;
+    } else {
+      // End countdown
+      clearInterval(countdownTimer);
+      countdownTimer = null;
+      removeCountdownElement();
+      // Small delay to allow UI to update then call onComplete
+      try { if (typeof onComplete === 'function') onComplete(); } catch (e) { console.error('Countdown onComplete error', e); }
+      countdownInProgress = false;
+    }
+  }, 1000);
+}
+
+/**
+ * Cancel an active gesture countdown (if any) and remove UI
+ */
+function cancelGestureCountdown() {
+  if (!countdownInProgress) return;
+  if (countdownTimer) {
+    clearInterval(countdownTimer);
+    countdownTimer = null;
+  }
+  removeCountdownElement();
+  countdownInProgress = false;
+  console.log('Gesture countdown cancelled');
+}
+
+function removeCountdownElement() {
+  if (countdownElement && countdownElement.parentNode) {
+    countdownElement.parentNode.removeChild(countdownElement);
+    countdownElement = null;
+  }
 }
 
 /**
