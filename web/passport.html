@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
   <title>WanderLens — Passport</title>
   <link rel="stylesheet" href="./style.css" />
 </head>
+
 <body>
   <div class="app">
     <header class="app-header">
@@ -19,27 +21,53 @@
       <div id="list" class="passport-list"></div>
     </main>
   </div>
-
+  
   <script>
-    function fmt(ts){ try { return new Date(ts).toLocaleString(); } catch { return ts; } }
-    function render(){
-      const root = document.getElementById('list');
-      const entries = JSON.parse(localStorage.getItem('passportEntries') || '[]');
-      if (!entries.length) { root.innerHTML = '<p class="hint" style="padding:16px">No entries yet. Scan a landmark and save it!</p>'; return; }
-      root.innerHTML = entries.map(e => `
-        <div class="card">
-          <img class="thumb" src="${e.image}" alt="${e.name}" />
-          <div class="meta">
-            <div class="name">${e.name}</div>
-            <div class="time">${fmt(e.timestamp)}</div>
-            <div class="overlay-text">${e.info || ''}</div>
-          </div>
-        </div>
-      `).join('');
+  function fmt(ts) {
+    try { return new Date(ts).toLocaleString(); }
+    catch { return ts; }
+  }
+
+  function loadEntries() {
+    return JSON.parse(localStorage.getItem('passportEntries') || '[]');
+  }
+
+  function saveEntries(entries) {
+    localStorage.setItem('passportEntries', JSON.stringify(entries));
+  }
+
+  function deleteEntry(index) {
+    const entries = loadEntries();
+    entries.splice(index, 1);
+    saveEntries(entries);
+    render();
+  }
+
+  function render() {
+    const root = document.getElementById('list');
+    const entries = loadEntries();
+
+    if (!entries.length) {
+      root.innerHTML = '<p class="hint" style="padding:16px">No entries yet. Scan a landmark and save it!</p>';
+      return;
     }
-    document.addEventListener('DOMContentLoaded', render);
-  </script>
+
+    root.innerHTML = entries.map((e, i) => `
+      <div class="card">
+        <img class="thumb" src="${e.image}" alt="${e.name}" />
+        <div class="meta">
+          <div class="name">${e.name}</div>
+          <div class="time">${fmt(e.timestamp)}</div>
+          <div class="overlay-text">${e.info || ''}</div>
+        </div>
+        <button class="delete-btn" onclick="deleteEntry(${i})">🗑️ Delete</button>
+      </div>
+    `).join('');
+  }
+
+  document.addEventListener('DOMContentLoaded', render);
+</script>
+
 </body>
+
 </html>
-
-
