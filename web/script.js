@@ -1,6 +1,9 @@
 const video = document.getElementById("video");
 const canvas = document.getElementById("canvas");
 const scanBtn = document.getElementById("scanBtn");
+const translateBtn = document.getElementById("translateBtn");
+const targetLangSelect = document.getElementById("targetLang");
+// removed side panel UI
 const overlay = document.getElementById("overlay");
 const overlayTitle = document.getElementById("overlayTitle");
 const overlayText = document.getElementById("overlayText");
@@ -30,8 +33,14 @@ function captureFrame() {
 }
 
 function showOverlay(name, info) {
-  overlayTitle.textContent = name || "Unknown";
-  overlayText.textContent = info || "No description available.";
+  if (name) {
+    overlayTitle.textContent = name;
+    overlayTitle.classList.remove("hidden");
+  } else {
+    overlayTitle.textContent = "";
+    overlayTitle.classList.add("hidden");
+  }
+  overlayText.textContent = info || "";
   overlay.classList.remove("hidden");
 }
 
@@ -56,6 +65,16 @@ async function analyzeImage(imageDataUrl) {
   return res.json();
 }
 
+async function ocrTranslate(imageDataUrl, targetLang) {
+  const res = await fetch(`${BACKEND_URL}/ocr_translate`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ image: imageDataUrl, target: targetLang })
+  });
+  if (!res.ok) throw new Error(`OCR translate failed: ${res.status}`);
+  return res.json();
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   if (video) startCamera();
 
@@ -66,6 +85,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const result = await analyzeImage(dataUrl);
         const { landmark, info } = result;
         showOverlay(landmark, info);
+        // Ensure save button is visible for landmark saves
+        if (saveBtn) saveBtn.style.display = "";
 
         saveBtn.onclick = () => {
           saveToPassport({
@@ -84,8 +105,30 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  if (translateBtn) {
+    translateBtn.addEventListener("click", async () => {
+      const dataUrl = captureFrame();
+      const target = (targetLangSelect && targetLangSelect.value) || "en";
+      try {
+        const result = await ocrTranslate(dataUrl, target);
+        const { detected_text, translated_text, source_lang, target_lang } = result;
+        const info = translated_text || '';
+        const title = `Translation (${(source_lang || 'auto').toUpperCase()} → ${(target_lang || target).toUpperCase()})`;
+        showOverlay(title, info);
+        // Hide save button for translations (do not save translated text)
+        if (saveBtn) saveBtn.style.display = "none";
+      } catch (e) {
+        console.error(e);
+        alert("Translate failed. Ensure backend is running.");
+      }
+    });
+  }
   if (closeOverlayBtn) {
-    closeOverlayBtn.addEventListener("click", () => hideOverlay());
+    closeOverlayBtn.addEventListener("click", () => {
+      hideOverlay();
+      // Reset save button visibility for next time
+      if (saveBtn) saveBtn.style.display = "";
+    });
   }
 });
 

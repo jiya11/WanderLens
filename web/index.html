@@ -8,15 +8,16 @@
 </head>
 <body>
   <div class="app">
-    <header class="app-header">
-      <h1>WanderLens</h1>
-      <nav>
-        <a class="link" href="./passport.html">Passport</a>
-      </nav>
-    </header>
+    <header class="app-header hidden"></header>
 
     <main class="camera-area">
       <div class="video-frame">
+        <div class="overlay-topbar">
+          <div class="topbar-content">
+            <div class="brand">WanderLens</div>
+            <a class="link passport-link" href="./passport.html">Passport</a>
+          </div>
+        </div>
         <video id="video" autoplay playsinline></video>
         <canvas id="canvas" class="hidden" width="1280" height="720"></canvas>
         <div id="overlay" class="overlay hidden">
@@ -29,12 +30,28 @@
             </div>
           </div>
         </div>
-      </div>
 
-      <div class="controls">
-        <button id="scanBtn" class="btn btn-primary">Scan</button>
+        <div class="controls in-frame">
+          <div class="control-group">
+            <label for="targetLang" class="control-label">Target language</label>
+            <select id="targetLang" class="btn btn-secondary" aria-label="Target language">
+              <option value="en" selected>English (EN)</option>
+              <option value="fr">French (FR)</option>
+              <option value="es">Spanish (ES)</option>
+              <option value="de">German (DE)</option>
+              <option value="it">Italian (IT)</option>
+              <option value="ja">Japanese (JA)</option>
+              <option value="ko">Korean (KO)</option>
+              <option value="zh">Chinese (ZH)</option>
+            </select>
+          </div>
+
+          <button id="translateBtn" class="btn btn-primary">Translate to target</button>
+          <button id="scanBtn" class="btn">Identify landmark</button>
+          <p class="hint small">Translate finds text in view and shows the result.</p>
+        </div>
       </div>
-      <p class="hint">Tip: Hold up a landmark image on your phone or screen.</p>
+      <p class="hint">Tip: Hold up a sign or landmark image on your phone or screen.</p>
     </main>
   </div>
 

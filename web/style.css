@@ -1,10 +1,20 @@
 :root {
-  --bg: #0b0f14;
-  --card: #131a22;
-  --text: #e6eef6;
-  --muted: #9fb3c8;
-  --primary: #5ac8fa;
-  --accent: #ffd166;
+  --bg: #f3d7d6;
+  --card: #f26fa8;
+  --text: #11412f;
+  --muted: #0c2439;
+  --primary: #68b8f5;
+  --accent: #f18725;
+  --border: #1d5d48;
+  --border-strong: #f26fa8;
+  --panel: #ed4b2a;
+  --secondary: #ed4a2ace;
+  --overlay-start: #7de9a9;
+  --overlay-end: #3cc275;
+  --overlay-scrim: #f3d7d6;
+  --overlay-shadow: 0 12px 28px rgba(0,0,0,0.25);
+  --controls-overlay: rgba(17, 65, 47, 0.25);
+  --controls-shadow: 0 10px 24px rgba(17, 65, 47, 0.25);
 }
 
 * { box-sizing: border-box; }
@@ -13,7 +23,7 @@ body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   color: var(--text);
-  background: linear-gradient(180deg, #091019 0%, #0b0f14 40%, #0b0f14 100%);
+  background:var(--bg);
 }
 
 .app {
@@ -31,9 +41,15 @@ body {
   padding: 16px;
   position: sticky;
   top: 0;
-  background: rgba(11, 15, 20, 0.8);
+  background: var(--card);
   backdrop-filter: blur(8px);
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  /* Match the phone frame */
+  border-top: 0px solid var(--border-strong);
+  border-left: 0px solid var(--border-strong);
+  border-right: 0px solid var(--border-strong);
+  border-bottom: 0;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
 }
 
 .app-header h1 {
@@ -41,8 +57,22 @@ body {
   font-size: 20px;
 }
 
+
+.topbar-content { display: flex; align-items: center; justify-content: space-between; }
+.brand { font-weight: 800; letter-spacing: 0.3px; }
+.passport-link { font-weight: 600; }
+.overlay-topbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 10px 12px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    z-index: 2;
+  }
 .link {
-  color: var(--primary);
+  color: var(--text);
   text-decoration: none;
 }
 
@@ -53,48 +83,105 @@ body {
   gap: 12px;
 }
 
+.split { display: grid; grid-template-columns: 1fr; gap: 16px; }
+.left { display: flex; flex-direction: column; gap: 12px; }
+.right.panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+}
+.panel-header { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+.panel-title { margin: 0; font-size: 16px; }
+.panel-subtitle { color: var(--muted); font-size: 12px; }
+.panel-text {
+  width: 100%;
+  min-height: 160px;
+  background: var(--overlay-end);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+  resize: vertical;
+}
+.panel-original { margin-top: 10px; }
+.panel-label { color: var(--muted); font-size: 12px; margin-bottom: 4px; }
+.panel-pre { background: var(--overlay-end); border: 1px solid var(--border); border-radius: 8px; padding: 10px; white-space: pre-wrap; word-break: break-word; }
+.panel-actions { display: flex; gap: 8px; margin-top: 10px; }
+
+@media (min-width: 900px) {
+  .split { grid-template-columns: 1.2fr 0.8fr; }
+}
+
 .video-frame {
   position: relative;
   border-radius: 16px;
   overflow: hidden;
-  background: #000;
-  border: 1px solid rgba(255,255,255,0.06);
+  background: var(--bg);
+  border: 15px solid var(--border-strong);
+  aspect-ratio: 9 / 19.5; /* iPhone 14 Pro Max portrait */
 }
 
 video {
   width: 100%;
   height: auto;
   display: block;
-  aspect-ratio: 9 / 16;
-  background: #000;
+  aspect-ratio: 9 / 19.5; /* match container for taller view */
+  background: var(--border-strong);
 }
 
 .overlay {
   position: absolute;
   inset: 0;
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start; /* anchor near top */
   justify-content: center;
-  padding: 16px;
-  background: linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,0.55) 85%);
+  padding: 24px;
 }
 
 .overlay-card {
   width: 100%;
-  max-width: 420px;
-  background: rgba(19, 26, 34, 0.92);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 14px;
-  padding: 14px;
-  box-shadow: 0 6px 30px rgba(0,0,0,0.35);
+  max-width: 720px;
+  background: var(--overlay-end);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 16px;
+  padding: 18px;
+  margin-top: 16px; /* spacing from top */
+  box-shadow: var(--border);
 }
 
-.overlay-title { font-weight: 700; font-size: 18px; }
-.overlay-text { color: var(--muted); margin-top: 6px; font-size: 14px; line-height: 1.4; }
+.overlay-title { font-weight: 500; font-size: 14px; color: var(--text); letter-spacing: 0.2px; margin-bottom: 6px; }
+.overlay-text { color: var(--text); margin-top: 0; font-size: 20px; line-height: 1.6; white-space: pre-wrap; font-weight: 700; text-align: center; }
+.overlay-title.hidden + .overlay-text { margin-top: 0; }
 
-.overlay-actions { display: flex; gap: 8px; margin-top: 12px; }
+.overlay-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.overlay-actions .btn { width: 100%; }
 
 .controls { display: flex; gap: 12px; justify-content: center; }
+.controls.in-frame {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  background: var(--controls-overlay);
+  border: 1px solid rgba(255,255,255,0.12);
+  padding: 10px 12px;
+  border-radius: 12px;
+  backdrop-filter: blur(6px);
+  width: calc(100% - 32px);
+  max-width: 640px;
+  box-shadow: var(--controls-shadow);
+}
+.controls.in-frame .btn, .controls.in-frame select { width: 100%; }
+.controls.in-frame select { text-align: center; text-align-last: center; -moz-text-align-last: center; }
+.controls.in-frame select option { text-align: center; }
+.control-group { display: flex; flex-direction: column; gap: 6px; align-items: stretch; width: 100%; }
+.control-label { font-size: 12px; color: var(--text); }
+.hint.small { font-size: 11px; margin: 0; }
 
 .btn {
   padding: 10px 14px;
@@ -105,7 +192,7 @@ video {
   cursor: pointer;
 }
 .btn-primary { background: var(--primary); color: #001622; border-color: rgba(0,0,0,0.15); }
-.btn-secondary { background: #1a2230; }
+.btn-secondary { background: var(--secondary); }
 
 .hint { color: var(--muted); text-align: center; font-size: 13px; }
 

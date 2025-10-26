@@ -33,6 +33,64 @@ def _google_api_key() -> str:
     )
 
 
+def _compute_box_area(vertices: list) -> float:
+    if not vertices:
+        return 0.0
+    xs = [v.get("x", 0) for v in vertices]
+    ys = [v.get("y", 0) for v in vertices]
+    width = max(xs) - min(xs)
+    height = max(ys) - min(ys)
+    return max(width, 0) * max(height, 0)
+
+
+def _collect_image_dims(pages: list) -> tuple:
+    max_x = 0
+    max_y = 0
+    for p in pages or []:
+        for b in p.get("blocks", []):
+            verts = (b.get("boundingBox") or {}).get("vertices", [])
+            for v in verts:
+                max_x = max(max_x, v.get("x", 0))
+                max_y = max(max_y, v.get("y", 0))
+    return (max_x or 1, max_y or 1)
+
+
+def _extract_filtered_text(full_text_anno: dict, min_block_area_ratio: float = 0.01, min_confidence: float = 0.6) -> str:
+    if not full_text_anno:
+        return ""
+    pages = full_text_anno.get("pages", [])
+    img_w, img_h = _collect_image_dims(pages)
+    img_area = float(img_w * img_h) if img_w and img_h else 1.0
+
+    collected_lines = []
+    for p in pages:
+        for b in p.get("blocks", []):
+            box = (b.get("boundingBox") or {}).get("vertices", [])
+            area = _compute_box_area(box)
+            area_ratio = (area / img_area) if img_area else 0.0
+            conf = b.get("confidence", 1.0)
+            if area_ratio < min_block_area_ratio or conf < min_confidence:
+                continue
+            # Reconstruct text from paragraphs/words/symbols
+            block_lines = []
+            for para in b.get("paragraphs", []):
+                words = []
+                for w in para.get("words", []):
+                    symbols = [s.get("text", "") for s in w.get("symbols", [])]
+                    word = "".join(symbols)
+                    if word:
+                        words.append(word)
+                if words:
+                    block_lines.append(" ".join(words))
+            if block_lines:
+                collected_lines.append("\n".join(block_lines))
+
+    # Fallback: if filtering removed everything, return the raw full text
+    if not collected_lines:
+        return full_text_anno.get("text", "") or ""
+    return "\n\n".join(collected_lines)
+
+
 def call_google_vision_text_detection(image_data_url: str) -> str:
     api_key = _google_api_key()
     if not api_key:
@@ -43,7 +101,7 @@ def call_google_vision_text_detection(image_data_url: str) -> str:
         "requests": [
             {
                 "image": {"content": content_b64},
-                "features": [{"type": "TEXT_DETECTION"}]
+                "features": [{"type": "TEXT_DETECTION"}],
             }
         ]
     }
@@ -51,10 +109,14 @@ def call_google_vision_text_detection(image_data_url: str) -> str:
     r.raise_for_status()
     data = r.json()
     try:
-        annotations = data["responses"][0].get("fullTextAnnotation")
-        return annotations.get("text", "") if annotations else ""
+        full = data["responses"][0].get("fullTextAnnotation")
+        return _extract_filtered_text(full, min_block_area_ratio=0.01, min_confidence=0.65)
     except Exception:
-        return ""
+        try:
+            annotations = data["responses"][0].get("fullTextAnnotation")
+            return annotations.get("text", "") if annotations else ""
+        except Exception:
+            return ""
 
 
 def call_google_translate(text: str, target: str = "en") -> dict:

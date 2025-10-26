@@ -1,17 +1,15 @@
-WanderLens
-=================
+# WanderLens
 
 An AR-style, web-first demo for travelers: point your camera at a landmark image, get an overlay with the name and a fun fact, and save it to a "Digital Passport." Includes a minimal Python (Flask) backend so you can hide API keys later and expand easily.
 
-Quick Start
------------
+## Quick Start
 
 Prereqs:
 
 - Python 3.9+ installed
 - A modern browser (Chrome/Edge/Safari/Firefox). Camera requires a secure context (https or localhost)
 
-1) Backend (Flask)
+1. Backend (Flask)
 
 ```bash
 cd server
@@ -23,7 +21,7 @@ python app.py
 
 The server runs at `http://127.0.0.1:5001`.
 
-2) Frontend (static web)
+2. Frontend (static web)
 
 Use a simple local server so the camera works (browsers block camera on file://):
 
@@ -34,16 +32,14 @@ python3 -m http.server 5173
 
 Open `http://127.0.0.1:5173` in your browser.
 
-What You Can Demo
------------------
+## What You Can Demo
 
 - Live camera preview (laptop webcam) in a mobile-like layout
 - Click "Scan" to send a snapshot to the backend (mock analyze)
 - See an overlay with a landmark name + placeholder info
 - Click "Add to Passport" to save a card locally (in your browser)
 
-Project Structure
------------------
+## Project Structure
 
 ```
 wanderlens/
@@ -59,8 +55,7 @@ wanderlens/
 └─ README.md
 ```
 
-Backend API (Dev / Mock)
-------------------------
+## Backend API (Dev / Mock)
 
 - `POST /analyze`
   - Body: `{ "image": "data:image/png;base64,..." }`
@@ -71,25 +66,24 @@ Notes:
 - This is a mock for hackathon speed. You can swap in Google Cloud Vision (Landmark Detection) and Wikipedia summary later.
 - CORS is enabled for local development.
 
-Environment Variables
----------------------
+## Environment Variables
 
 Copy `.env.example` to `.env` (in project root) and fill in as you add real APIs.
 
+Use a single key for both OCR (Vision) and Translate:
+
 ```
-GOOGLE_CLOUD_VISION_API_KEY=your_key_here
+GOOGLE_TRANSLATE_API_KEY=your_key_here
 ```
 
-Future Upgrades (Post-Demo)
----------------------------
+## Future Upgrades (Post-Demo)
 
 - Replace mock `/analyze` with Google Cloud Vision Landmark Detection
 - Add `/info?name=...` that queries Wikipedia summary API
 - Add OCR + Translate endpoints for sign translation
 - Persist the Digital Passport to Firebase or a database
 
-GitHub Setup (Local -> Remote)
-------------------------------
+## GitHub Setup (Local -> Remote)
 
 After files exist and you can run the app locally:
 
@@ -104,9 +98,6 @@ git branch -M main
 git push -u origin main
 ```
 
-License
--------
+## License
 
 MIT
-
-
