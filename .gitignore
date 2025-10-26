@@ -18,6 +18,5 @@ build/
 .idea/
 
 #API Keys
-.text_translation_API_keys.json
 
 
