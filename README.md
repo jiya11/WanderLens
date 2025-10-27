@@ -1,103 +1,23 @@
-# WanderLens
+# WanderLens 🌍
+WanderLens transforms your smartphone camera into an smart travel companion, solving the universal frustration every traveler faces: standing in front of something amazing and wondering "What am I looking at?" or struggling to read a foreign menu. We've all experienced the exhausting app-juggling act—switching between Google Lens, Google Translate, Google Maps, and notes, constantly context-switching and staring at screens instead of actually experiencing the moment. WanderLens changes this with an all-in-one solution that combines computer vision, translation, geolocation, and gesture recognition into a smooth experience. Point your camera to identify landmarks instantly, translate signs in real-time, discover nearby attractions with a gesture, and automatically journal everything to your digital passport, all without breaking your flow or missing the moments you came to capture.
 
-An AR-style, web-first demo for travelers: point your camera at a landmark image, get an overlay with the name and a fun fact, and save it to a "Digital Passport." Includes a minimal Python (Flask) backend so you can hide API keys later and expand easily.
+## 📱 Features
+1. 🏛️ Lanmark Identification
+Point your camera at any monument, building, or landmark and tap "Scan". Powered by Google Cloud Vision API, the system uses pre-trained deep learning models to instantly recognize famous sites worldwide and displays the name with contextual information. The frontend captures snapshots and sends base64-encoded images to our Flask backend, which processes the Vision API response and returns landmark names.
 
-## Quick Start
+2. 🌐 Real-Time Translation
+Select your target language and tap "Translate to Target" to read anything in a foreign language. The Optical Character Recognition (OCR) engine powered by Google Cloud Vision API extracts text from the camera view, while the Google Cloud Translation API automatically detects the source language and displays translations instantly. Custom filtering algorithms analyze bounding box area ratios to eliminate noise, translating only the meaningful content you actually want to read.
 
-Prereqs:
+3. 📍 Nearby Discovery
+Tap "Discover Near Me" to find attractions and food spots within walking distance. The system uses OpenStreetMap's API to query real-time geospatial data, calculating accurate distances and walking times using the Haversine formula.
 
-- Python 3.9+ installed
-- A modern browser (Chrome/Edge/Safari/Firefox). Camera requires a secure context (https or localhost)
+4. 📔 Digital Passport
+Every landmark you identify and place you discover can be saved to your digital passport, which is a visual journal of your travels. Each entry includes a photo (for landmarks), timestamp and description.
 
-1. Backend (Flask)
+5. ✋ Gesture Control
+Use the application hands-free using MediaPipe Gesture Recognizer, which processes video frames in real-time to classify gestures:
+✌️ Peace sign: Trigger a 3-second countdown to scan a landmark
+👍 Thumbs up: Save the current result to your Digital Passport
+👎 Thumbs down: Close overlays or cancel actions
 
-```bash
-cd server
-python3 -m venv .venv
-source .venv/bin/activate  # Windows: .venv\\Scripts\\activate
-pip install -r requirements.txt
-python app.py
-```
-
-The server runs at `http://127.0.0.1:5001`.
-
-2. Frontend (static web)
-
-Use a simple local server so the camera works (browsers block camera on file://):
-
-```bash
-cd web
-python3 -m http.server 5173
-```
-
-Open `http://127.0.0.1:5173` in your browser.
-
-## What You Can Demo
-
-- Live camera preview (laptop webcam) in a mobile-like layout
-- Click "Scan" to send a snapshot to the backend (mock analyze)
-- See an overlay with a landmark name + placeholder info
-- Click "Add to Passport" to save a card locally (in your browser)
-
-## Project Structure
-
-```
-wanderlens/
-├─ web/                 # Static frontend (HTML/CSS/JS)
-│  ├─ index.html
-│  ├─ style.css
-│  └─ script.js
-├─ server/              # Minimal Flask backend
-│  ├─ app.py
-│  └─ requirements.txt
-├─ .env.example         # Placeholder for API keys (copy to .env)
-├─ .gitignore
-└─ README.md
-```
-
-## Backend API (Dev / Mock)
-
-- `POST /analyze`
-  - Body: `{ "image": "data:image/png;base64,..." }`
-  - Returns: `{ "landmark": "Demo Landmark", "confidence": 0.99, "info": "Placeholder fun fact." }`
-
-Notes:
-
-- This is a mock for hackathon speed. You can swap in Google Cloud Vision (Landmark Detection) and Wikipedia summary later.
-- CORS is enabled for local development.
-
-## Environment Variables
-
-Copy `.env.example` to `.env` (in project root) and fill in as you add real APIs.
-
-Use a single key for both OCR (Vision) and Translate:
-
-```
-GOOGLE_TRANSLATE_API_KEY=your_key_here
-```
-
-## Future Upgrades (Post-Demo)
-
-- Replace mock `/analyze` with Google Cloud Vision Landmark Detection
-- Add `/info?name=...` that queries Wikipedia summary API
-- Add OCR + Translate endpoints for sign translation
-- Persist the Digital Passport to Firebase or a database
-
-## GitHub Setup (Local -> Remote)
-
-After files exist and you can run the app locally:
-
-```bash
-git init
-git add .
-git commit -m "chore: initial scaffold for WanderLens demo"
-
-# Create a new repo on GitHub (via site or gh CLI). Then:
-git remote add origin https://github.com/<your-username>/wanderlens.git
-git branch -M main
-git push -u origin main
-```
-
-## License
-
-MIT
+## 📱 Watch the Demo!
