@@ -1,6 +1,9 @@
 # WanderLens 🌍
 WanderLens transforms your smartphone camera into an smart travel companion, solving the universal frustration every traveler faces: standing in front of something amazing and wondering "What am I looking at?" or struggling to read a foreign menu. We've all experienced the exhausting app-juggling act of switching between Google Lens, Google Translate, Google Maps, and notes, constantly context-switching and staring at screens instead of actually experiencing the moment. WanderLens changes this with an all-in-one solution that combines computer vision, translation, geolocation, and gesture recognition into a smooth experience. Point your camera to identify landmarks instantly, translate signs in real-time, discover nearby attractions with a gesture, and automatically journal everything to your digital passport, all without breaking your flow or missing the moments you came to capture.
 
+<img width="548" height="366" alt="image" src="https://github.com/user-attachments/assets/09ff2780-5fe2-4238-8354-a7356c5d0e11" />
+
+
 ## 📱 Features
 1. 🏛️ Lanmark Identification
 Point your camera at any monument, building, or landmark and tap "Identify Landmark". Powered by Google Cloud Vision API, the system uses pre-trained deep learning models to instantly recognize famous sites worldwide and displays the name with contextual information. The frontend captures snapshots and sends base64-encoded images to our Flask backend, which processes the Vision API response and returns landmark names.
